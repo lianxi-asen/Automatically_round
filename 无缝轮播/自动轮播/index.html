@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            list-style:none;
+        }
+        .box{
+            overflow: hidden;
+            position: relative;
+            width: 780px;
+            height:330px;
+            /* background-color: red; */
+            margin:50px auto 0;        
+        }
+        .list,.banner{
+            display:flex;
+            width:700% ;
+        }
+        .list li img{
+            width: 100%;
+        }
+        .list.on{
+            margin-left:-100%;
+            transition: .3s;
+        }
+        .list.active{
+            transition: .0s;
+        }
+        .btn div{
+            position:absolute;
+            top:40%;
+            font-size: 40px;
+            font-weight: bold;
+            color:#fff;
+        }
+        .btn div:nth-child(1){
+            left:0;
+        }
+        .btn div:last-child{
+            right:0;
+        }
+        .banner{
+            position:absolute;
+            bottom:0;
+            right:0;
+            width: 25%;
+        }
+        .banner li{
+            width: 20px;
+            height:20px;
+            border-radius:50%;
+            border:1px solid yellow;
+            margin-right:20px;
+        }
+        .banner li:last-child{
+            margin-right:0;
+        }
+        .banner li.on{
+            background-color:red;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <ul class="list on">
+            <li><img src="img/7.jpg" alt="这是往前的退最后一个"></li>
+
+            <li><img src="img/1.jpg" alt=""></li>
+            <li><img src="img/2.jpg" alt=""></li>
+            <li><img src="img/3.jpg" alt=""></li>
+            <li><img src="img/4.jpg" alt=""></li>
+            <li><img src="img/5.jpg" alt=""></li>
+
+            <li><img src="img/6.jpg" alt=""></li>
+        </ul>
+        <div class="btn">
+            <div>&lt;</div>
+            <div>&gt;</div>
+        </div>
+        <ul class="banner">
+            <li class="on"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script>    
+        //获取元素
+        //获取box 
+        var box = document.querySelector(".box")
+        //获取list的这个ul
+        var List  = box.querySelector(".list")
+        //console.log(List)
+        //获取图片的li
+        var Listli = List.querySelectorAll(".list li")
+        //获取 小圆点的 li
+        var bannerLi = box.querySelectorAll(".banner li")
+        //获取两边的按钮
+        var btn = box.querySelectorAll(".btn div")
+        //console.log(btn)
+        
+        //信号量
+        var num = 0;
+        var len = Listli.length;//这是图片的li长度
+        var length = bannerLi.length;//这是小圆点的li的长度
+        var time = null
+        for(var i = 0;i<length;i++){
+            bannerLi[i].index = i
+            bannerLi[i].onclick = function(){
+                //先让num的之前的数值清除on
+                if(num == this.index)return 
+                bannerLi[num].classList.remove("on")
+                //num等于新值
+                num = this.index
+                //在给新的num赋值 添加上on
+                bannerLi[num].classList.add("on")
+                //在让list的margin等于 -的num的新值 加上1 *100的百分之百
+                List.style.marginLeft = "-"+(num+1)*100+"%";
+            }
+        }
+        //当左右两边按钮点击的时候
+        btn[0].onclick = function(){
+            //没次执行的时候先把active类名清空
+            List.classList.remove("active")
+            //先让num的之前的值清空
+            bannerLi[num].classList.remove("on")
+            //num--
+            num--
+            List.style.marginLeft = "-"+(num+1)*100+"%";
+            //如果num 的值小于 0 就让num = length-1
+            if(num<0){
+               
+                setTimeout(function(){
+                    List.classList.add("active")
+                    List.style.marginLeft = '-'+(len-2)*100+"%"
+                },300)
+                 num = length-1
+            }
+            bannerLi[num].classList.add("on")
+        }
+        btn[1].onclick = function(){
+            add()
+        }
+        
+        function add(){
+            //每次执行的时候先把类名清空
+            List.classList.remove("active")
+             //先让num的之前的值清空
+             bannerLi[num].classList.remove("on")
+             //num++
+             num++
+             //要先让图片到达框里 再去判断 
+             List.style.marginLeft = "-"+(num+1)*100+"%";
+             //如果num>下标4的时候 就让num = 0；
+             if(num>length-1){
+                 setTimeout(function(){
+                    List.classList.add("active")
+                    List.style.marginLeft = -100+"%"
+                 },300)
+                 num= 0
+             }
+             //在给新值的num添加上on
+             bannerLi[num].classList.add("on")
+        }
+        function aa(){
+            time = setInterval(add,1000)
+        }
+        aa()
+        //当移入box的时候
+        box.onmouseenter = function(){
+            clearInterval(time)
+        }
+        //当移出的时候
+        box.onmouseleave = function(){
+            aa()
+        }
+    </script>
+</body>
+</html>
